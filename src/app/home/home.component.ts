@@ -30,11 +30,64 @@ export class HomeComponent {
 
   fetchProducts(page: number, perPage: number) {
     this.productsService.getProducts("http://localhost:3000/clothes", { page, perPage })
-    .subscribe((products: Products) => {
-      // console.log(products.items)
-      this.products = products.items
-      this.totalRecords = products.total;
+    .subscribe({
+      next: (data: Products) => {
+        this.products = data.items;
+        this.totalRecords = data.total;
+      },
+
+      error: (error) => {
+        console.log(error);
+      },
     })
+  }
+
+
+  editProduct(product: Product, id: number) {
+    this.productsService.editProduct(`http://localhost:3000/clothes/${id}`, product).subscribe(
+
+      // Separate handlers for the request (in case it's successful or if not)
+
+      {
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      }
+    );
+  }
+
+  deleteProduct(id: number) {
+    this.productsService.deleteProduct(`http://localhost:3000/clothes/${id}`).subscribe(
+      {
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+        },
+
+        error: (error) => {
+          console.log(error);
+        }
+      }
+    )
+  }
+
+  addProduct(product: Product) {
+    this.productsService.addProduct(`http://localhost:3000/clothes`, product).subscribe(
+      {
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+        },
+
+        error: (error) => {
+          console.log(error);
+        }
+      }
+    );
   }
 
   ngOnInit() {
