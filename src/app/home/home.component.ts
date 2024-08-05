@@ -33,7 +33,9 @@ export class HomeComponent {
   }
 
   toggleDeletePopup(product: Product) {
+    if(!product.id) return
 
+    this.deleteProduct(product.id)
   }
 
   toggleAddPopup() {
